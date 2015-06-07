@@ -41,8 +41,8 @@ __DATA__
   <ul>
     <li>I first gave this talk at YAPC::NA on June 8, 2015</li>
     <!-- <li>I updated it on Feb 10, 2015 for MadMongers</li> -->
-    <li>The talk is hosted at <a href="http://jberger.github.io/MojoliciousIntroduction" target="_blank">http://jberger.github.io/MojoliciousIntroduction</a></li>
-    <li>The source is available at <a href="https://github.com/jberger/MojoliciousIntroduction" target="_blank">https://github.com/jberger/MojoliciousIntroduction</a></li>
+    <li>The talk is hosted at <a href="http://jberger.github.io/TestingWithPhantom" target="_blank">http://jberger.github.io/TestingWithPhantom</a></li>
+    <li>The source is available at <a href="https://github.com/jberger/TestingWithPhantom" target="_blank">https://github.com/jberger/TestingWithPhantom</a></li>
     <li>All code samples and all tests:
       <ul>
         <li>are complete and run as shown</li>
