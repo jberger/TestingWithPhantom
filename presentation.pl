@@ -79,7 +79,7 @@ __DATA__
 
   <section>
     <h4>Testing A Template</h4>
-    %= include_code 'ex/templates/simple.html.ep'
+    %= include_code 'ex/templates/simple.html.ep', language => 'html'
   </section>
   <section>
     <h4 class="no-uc">Test::Mojo</h4>
@@ -208,7 +208,7 @@ __DATA__
   </section>
   <section>
     <h4>Testing A Template</h4>
-    %= include_code 'ex/templates/dynamic.html.ep'
+    %= include_code 'ex/templates/dynamic.html.ep', language => 'html'
   </section>
   <section>
     <h4 class="no-uc">Test::Mojo::Role::Phantom</h4>
