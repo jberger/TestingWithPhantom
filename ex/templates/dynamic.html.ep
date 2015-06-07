@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+<html>
+  <head><title>Dynamic</title></head>
+  <body>
+    <p id="name">Leela</p>
+    <script>
+      (function(){ 
+        document.getElementById('name').innerHTML = 'Bender'; 
+      })();
+    </script>
+  </body>
+</html>
