@@ -1,0 +1,454 @@
+<!doctype html>
+<html lang="en">
+
+	<head>
+		<meta charset="utf-8">
+
+    <title></title>
+
+    <meta name="description" content="defies description">
+    <meta name="author" content="somebody pretty cool">
+
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+
+		<link rel="stylesheet" href="revealjs/css/reveal.css">
+    
+    <link href="revealjs/css/theme/black.css" id="theme" rel="stylesheet">
+
+		<!-- Code syntax highlighting -->
+		<link rel="stylesheet" href="revealjs/lib/css/zenburn.css">
+
+		<!-- Printing and PDF exports -->
+		<script>
+			var link = document.createElement( 'link' );
+			link.rel = 'stylesheet';
+			link.type = 'text/css';
+			link.href = window.location.search.match( /print-pdf/gi ) ? 'revealjs/css/print/pdf.css' : 'revealjs/css/print/paper.css';
+			document.getElementsByTagName( 'head' )[0].appendChild( link );
+		</script>
+
+		<!--[if lt IE 9]>
+		<script src="revealjs/lib/js/html5shiv.js"></script>
+		<![endif]-->
+
+    
+	</head>
+
+	<body>
+
+		<div class="reveal">
+
+			<!-- Any section element inside of this container is displayed as a slide -->
+			<div class="slides">
+        
+<style>
+  .no-uc { text-transform: none !important; }
+  .reveal pre code { max-height: 450px; }
+
+  #js {
+    font-family: cursive;
+    color: red;
+    text-transform: none;
+  }
+
+  #placeholder:not(.visible) {
+    display: none;
+  }
+</style>
+
+
+<section>
+  <h2>Test Your App's Javascript using <span class="no-uc">Test::Mojo::Role::Phantom</span><h2>
+  <h3>Joel Berger - YAPC::NA 2015</h3>
+  <img width="40%" src="group.png">
+</section>
+
+<section>
+
+  <h2>About this talk</h2>
+
+  <ul>
+    <li>I first gave this talk at YAPC::NA on June 8, 2015</li>
+    <!-- <li>I updated it on Feb 10, 2015 for MadMongers</li> -->
+    <li>The talk is hosted at <a href="http://jberger.github.io/MojoliciousIntroduction" target="_blank">http://jberger.github.io/MojoliciousIntroduction</a></li>
+    <li>The source is available at <a href="https://github.com/jberger/MojoliciousIntroduction" target="_blank">https://github.com/jberger/MojoliciousIntroduction</a></li>
+    <li>All code samples and all tests:
+      <ul>
+        <li>are complete and run as shown</li>
+        <li>are included in the repository</li>
+      </ul>
+    </li>
+  </ul>
+
+</section>
+
+<section>
+  <h2>Perl's Testing Culture</h2>
+
+  <ul>
+    <li>Most (useful) modules on CPAN are very well tested</li>
+    <li>Numerous testing modules on CPAN as well</li>
+    <li>CPAN Testers network (more recently Travis too)</li>
+  </ul>
+
+  <div style="min-height: 50px"></div>
+
+  <h2 class="fragment grow">This is Awesome!</h2>
+</section>
+
+<section>
+  <section>
+    <h2>How Do We Encourage People To Write Good Test Suites?</h2>
+  </section>
+
+  <section>
+    <h2>Make Testing Easy<h2>
+    <img src="bender_relaxing.gif">
+  </section>
+
+  <section>
+    <h4>Testing A Template</h4>
+        <pre><code class="perl" data-trim>
+&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+  &lt;head&gt;
+    &lt;title&gt;Simple&lt;/title&gt;
+  &lt;/head&gt;
+  &lt;body&gt;
+    &lt;p id=&quot;name&quot;&gt;Leela&lt;/p&gt;
+  &lt;/body&gt;
+&lt;/html&gt;
+    </code></pre>
+    <p style="float: right; text-color: white; font-size: small;">ex/templates/simple.html.ep</p>
+
+  </section>
+  <section>
+    <h4 class="no-uc">Test::Mojo</h4>
+        <pre><code class="perl" data-trim>
+use Mojolicious::Lite;
+
+use Test::More;
+use Test::Mojo;
+
+any &#39;/&#39; =&gt; &#39;simple&#39;;
+
+my $t = Test::Mojo-&gt;new;
+$t-&gt;get_ok(&#39;/&#39;)-&gt;status_is(200)
+  -&gt;text_is(&#39;title&#39; =&gt; &#39;Simple&#39;)
+  -&gt;text_is(&#39;body p#name&#39; =&gt; &#39;Leela&#39;);
+
+done_testing;
+
+    </code></pre>
+    <p style="float: right; text-color: white; font-size: small;">ex/simple.t</p>
+
+  </section>
+
+  <section>
+    <h2>Pretty Easy Right?!</h2>
+  </section>
+</section>
+
+<section>
+  <section>
+    <h2>Perl Authors Write</h2>
+    <h2>Good Perl Tests</h2>
+  </section>
+  <section>
+    <h2>But JavaScript Tests?</h2>
+    <img class="fragment" src="bad_tests.png">
+  </section>
+</section>
+
+<section>
+  <section>
+    <h2>How Do We Encourage People To Write JavaScript Tests?</h2>
+    <img src="planet.png">
+  </section>
+
+  <section>
+    <h2>
+      Make
+      <span id="placeholder" class="fragment">
+        <span id="js" class="fragment">JavaScript</span>
+      </span>
+      Testing Easy
+    <h2>
+  </section>
+</section>
+
+<section>
+  <h2>Design Goals</h2>
+  <ul>
+    <li>#1: Do not depend on any external running servers</li>
+    <li>#2: Emit TAP in the normal way Perl tests do</li>
+    <li>#3: Not have to reimplement lots of Test::More functionality</li>
+  </ul>
+</section>
+
+<section>
+  <section>
+    <h3>#1: Do not depend on any external running servers</h3>
+    <p>Selenium requires external running servers</p>
+    <ul>
+      <li>Application server</li>
+      <li>Selenium (remote control) server</li>
+      <li>Browser?</li>
+    </ul>
+  </section>
+  <section>
+    <h3>#1: Do not depend on any external running servers</h3>
+    <ul>
+      <li>Already <pre><code lang="perl">my $t = Test::Mojo->new</code></pre> starts a in-process application server</li>
+      <li>Can spin up a phantomjs process on demand</li>
+    <ul>
+  </section>
+  <section>
+    <h2>Phantom JS</h2>
+    <ul>
+      <li>Headless WebKit browser</li>
+      <li><a href="http://phantomjs.org">http://phantomjs.org</a></li>
+      <li>Easy to install</li>
+      <li>Free / Open source</li>
+    </ul>
+    <br>
+    <img class="fragment" width="40%" src="money.jpg">
+  </section>
+</section>
+
+<section>
+  <section>
+    <h3>#2: Emit TAP in the normal way Perl tests do</h3>
+    <ul>
+      <li>Important for integrating into existing architecture</li>
+      <li>Could use Tape.js from javascript side</li>
+      <li>Could use existing Perl Test::More somehow</li>
+    </ul>
+  </section>
+  <section>
+    <h3>Practical Considerations</h3>
+    <ul>
+      <li>JavaScript-side solutions are hard to install</li>
+      <li>Merge JS-emitted TAP into surrounding TAP, correctly?</li>
+      <li>Perl solutions already available of course</li>
+    </ul>
+  </section>
+</section>
+
+<section>
+  <section>
+    <h3>#3: Not have to reimplement lots of Test::More functionality</h3>
+
+    <ul>
+      <li>This is purely for my benefit</li>
+      <li>With #2, leads to a simple solution, just use it directly
+        <ul>
+          <li>Call Perl functions "from JavaScript"</li>
+        </ul>
+      </li>
+    </ul>
+  </section>
+
+  <section>
+    <h3>How Can This Be Done?</h3>
+    <ul>
+      <li>JSON over pipe to invoke function with args in the Perl process</li>
+      <li>Tests from JS wrapped in a subtest</li>
+      <li>This is just a first attempt, side-channel websocket would be nice too</li>
+    </ul>
+  </section>
+</section>
+
+<section>
+  <section>
+    <h2>Dynamic Example</h2>
+    <img width="40%" src="dynamic.gif">
+  </section>
+  <section>
+    <h4>Testing A Template</h4>
+        <pre><code class="perl" data-trim>
+&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+  &lt;head&gt;&lt;title&gt;Dynamic&lt;/title&gt;&lt;/head&gt;
+  &lt;body&gt;
+    &lt;p id=&quot;name&quot;&gt;Leela&lt;/p&gt;
+    &lt;script&gt;
+      (function(){ 
+        document.getElementById(&#39;name&#39;).innerHTML = &#39;Bender&#39;; 
+      })();
+    &lt;/script&gt;
+  &lt;/body&gt;
+&lt;/html&gt;
+    </code></pre>
+    <p style="float: right; text-color: white; font-size: small;">ex/templates/dynamic.html.ep</p>
+
+  </section>
+  <section>
+    <h4 class="no-uc">Test::Mojo::Role::Phantom</h4>
+        <pre><code class="perl" data-trim>
+use Mojolicious::Lite; use Test::More;
+use Test::Mojo::WithRoles &#39;Phantom&#39;;
+
+any &#39;/&#39; =&gt; &#39;dynamic&#39;;
+
+my $t = Test::Mojo::WithRoles-&gt;new;
+$t-&gt;get_ok(&#39;/&#39;)-&gt;status_is(200)
+  -&gt;text_is(&#39;body p#name&#39; =&gt; &#39;Leela&#39;);
+
+$t-&gt;phantom_ok(&#39;/&#39; =&gt; &lt;&lt;&#39;JS&#39;);
+  var text = page.evaluate(function(){
+    return document.getElementById(&#39;name&#39;).innerHTML;
+  });
+  perl.is(text, &#39;Bender&#39;, &#39;name changed after loading&#39;);
+JS
+
+done_testing;
+
+    </code></pre>
+    <p style="float: right; text-color: white; font-size: small;">ex/dynamic.t</p>
+
+  </section>
+</section>
+
+<section>
+  <section>
+    <h4>A More Interesting Example</h4>
+    <img src="mom.jpg">
+    <h4><span class="no-uc">MomCorp</span> Annihilation Machine</h4>
+  </section>
+  <section>
+        <pre><code class="perl" data-trim>
+use Mojolicious::Lite;
+any &#39;/&#39; =&gt; &#39;click&#39;;
+app-&gt;start;
+__DATA__
+
+@@ click.html.ep
+&lt;script&gt;
+  var current = 0, states = [&#39;Leela&#39;, &#39;Bender&#39;, &#39;Fry&#39;];
+  function cycle() {
+    current = (current + 1) % states.length;
+    return states[current];
+  }
+&lt;/script&gt;
+Marked For Annihilation:
+&lt;input type=&quot;button&quot; id=&quot;marked&quot;
+  value=&quot;Leela&quot; onclick=&quot;this.value = cycle()&quot;&gt;
+
+    </code></pre>
+    <p style="float: right; text-color: white; font-size: small;">ex/click.pl</p>
+
+  </section>
+  <section>
+        <pre><code class="perl" data-trim>
+use Mojo::Base -strict; use Test::More;
+use Test::Mojo::WithRoles &#39;Phantom&#39;;
+require &#39;ex/click.pl&#39;;
+
+my $t = Test::Mojo::WithRoles-&gt;new;
+$t-&gt;phantom_ok(&#39;/&#39; =&gt; &lt;&lt;&#39;JS&#39;);
+  function click_get() {
+    return page.evaluate(function() {
+      var marked = document.getElementById(&#39;marked&#39;);
+      marked.click(); return marked.value;
+    })
+  }
+  perl.is(click_get(), &#39;Bender&#39;, &#39;once&#39;);
+  perl.is(click_get(), &#39;Fry&#39;,    &#39;twice&#39;);
+  perl.is(click_get(), &#39;Leela&#39;,  &#39;three times a lady&#39;);
+  perl.is(click_get(), &#39;Bender&#39;, &#39;kiss my shine metal ...&#39;);
+JS
+
+done_testing;
+
+    </code></pre>
+    <p style="float: right; text-color: white; font-size: small;">ex/click.t</p>
+
+  </section>
+</section>
+
+<section>
+  <section>
+    <h2>... But I Don't Use Mojolicious</h2>
+    <img src="zoidberg_sad.jpg">
+  </section>
+  <section>
+    <h3>Dancer Your Thing?</h3>
+        <pre><code class="perl" data-trim>
+use Dancer;
+use Path::Tiny;
+my $html = path(&#39;ex/templates/dynamic.html.ep&#39;)-&gt;slurp;
+get &#39;/&#39; =&gt; sub { return $html };
+dance;
+
+    </code></pre>
+    <p style="float: right; text-color: white; font-size: small;">ex/dancer.pl</p>
+
+  </section>
+  <section>
+    <h4><span class="no-uc">Test::Mojo::Role::PSGI</span> Makes This Easy Too</h4>
+        <pre><code class="perl" data-trim>
+use Mojo::Base -strict; use Test::More;
+use Test::Mojo::WithRoles &#39;PSGI&#39;, &#39;Phantom&#39;;
+
+my $t = Test::Mojo::WithRoles-&gt;new(&#39;ex/dancer.pl&#39;);
+$t-&gt;get_ok(&#39;/&#39;)-&gt;status_is(200)
+  -&gt;text_is(&#39;body p#name&#39; =&gt; &#39;Leela&#39;);
+
+$t-&gt;phantom_ok(&#39;/&#39; =&gt; &lt;&lt;&#39;JS&#39;);
+  var text = page.evaluate(function(){
+    return document.getElementById(&#39;name&#39;).innerHTML;
+  });
+  perl.is(text, &#39;Bender&#39;, &#39;name changed after loading&#39;);
+JS
+
+done_testing;
+    </code></pre>
+    <p style="float: right; text-color: white; font-size: small;">ex/dancer.t</p>
+
+  </section>
+</section>
+
+<section>
+  <img src="winning.jpg">
+  <ul>
+    <li><a href="https://metacpan.org/pod/Test::Mojo::Role::Phantom">Test::Mojo::Role::Phantom</a></li>
+    <li><a href="http://phantomjs.org/">http://phantomjs.org</a></li>
+    <li><a href="http://mojolicio.us">http://mojolicio.us</a></li>
+    <li>#mojo on irc.perl.org</li>
+  </ul>
+</section>
+
+			</div>
+
+		</div>
+
+		<script src="revealjs/lib/js/head.min.js"></script>
+		<script src="revealjs/js/reveal.js"></script>
+
+		<script>
+			// Full list of configuration options available at:
+			// https://github.com/hakimel/reveal.js#configuration
+      
+      var init = {"progress":true,"transition":"slide","history":true,"controls":true,"center":true};
+			// Optional reveal.js plugins
+      init.dependencies = [
+        { src: 'revealjs/lib/js/classList.js', condition: function() { return !document.body.classList; } },
+        { src: 'revealjs/plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+        { src: 'revealjs/plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+        { src: 'revealjs/plugin/highlight/highlight.js', async: true, condition: function() { return !!document.querySelector( 'pre code' ); }, callback: function() { hljs.initHighlightingOnLoad(); } },
+        { src: 'revealjs/plugin/zoom-js/zoom.js', async: true },
+        { src: 'revealjs/plugin/notes/notes.js', async: true }
+      ];
+
+      
+			Reveal.initialize(init);
+
+		</script>
+
+    
+	</body>
+</html>
