@@ -14,7 +14,10 @@ __DATA__
 
 <style>
   .no-uc { text-transform: none !important; }
-  .reveal pre code { max-height: 450px; }
+  .reveal pre code {
+    max-height: 450px;
+    padding: 20px;
+  }
 
   #js {
     font-family: cursive;
@@ -48,6 +51,9 @@ __DATA__
         <li>are complete and run as shown</li>
         <li>are included in the repository</li>
       </ul>
+    </li>
+    <li>This presentation is a Mojolicious app!
+      <ul><li>Using <a href="http://metacpan.org/pod/Mojolicious::Plugin::RevealJS">Mojolicious::Plugin::RevealJS</a></li><ul>
     </li>
   </ul>
 
@@ -141,8 +147,10 @@ __DATA__
   <section>
     <h3>#1: Do not depend on any external running servers</h3>
     <ul>
-      <li>Already <pre><code lang="perl">my $t = Test::Mojo->new</code></pre> starts a in-process application server</li>
-      <li>Can spin up a phantomjs process on demand</li>
+      <li>Test::Mojo starts a in-process application server</li>
+      <li>Perl can't (natively) interpret Javascript</li>
+      <li>Even if it could, it would need a DOM</li>
+      <li>We could spin up a phantomjs process on demand?</li>
     <ul>
   </section>
   <section>
@@ -172,7 +180,6 @@ __DATA__
     <ul>
       <li>JavaScript-side solutions are hard to install</li>
       <li>Merge JS-emitted TAP into surrounding TAP, correctly?</li>
-      <li>Perl solutions already available of course</li>
     </ul>
   </section>
 </section>
@@ -183,8 +190,9 @@ __DATA__
 
     <ul>
       <li>This is purely for my benefit</li>
-      <li>With #2, leads to a simple solution, just use it directly
+      <li>With #2, leads to a simple solution
         <ul>
+          <li>Use Test::More direct</li>
           <li>Call Perl functions "from JavaScript"</li>
         </ul>
       </li>
@@ -194,9 +202,10 @@ __DATA__
   <section>
     <h3>How Can This Be Done?</h3>
     <ul>
-      <li>JSON over pipe to invoke function with args in the Perl process</li>
-      <li>Tests from JS wrapped in a subtest</li>
-      <li>This is just a first attempt, side-channel websocket would be nice too</li>
+      <li>A function call to start phantomjs and set it up</li>
+      <li>Send JSON over pipe to invoke functions with arguments in the Perl process</li>
+      <li>All tests from JS are wrapped in a subtest</li>
+      <li>Future work: A side-channel websocket also be nice</li>
     </ul>
   </section>
 </section>

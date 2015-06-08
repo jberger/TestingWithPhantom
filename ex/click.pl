@@ -13,5 +13,5 @@ __DATA__
 </script>
 Marked For Annihilation:
 <input type="button" id="marked"
-  value="Leela" onclick="this.value = cycle()">
+       value="Leela" onclick="this.value = cycle()">
 
