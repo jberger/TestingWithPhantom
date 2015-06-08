@@ -32,7 +32,7 @@ __DATA__
 
 
 <section>
-  <h2>Test Your App's Javascript using <span class="no-uc">Test::Mojo::Role::Phantom</span><h2>
+  <h2>Test Your App's JavaScript using <span class="no-uc">Test::Mojo::Role::Phantom</span><h2>
   <h3>Joel Berger - YAPC::NA 2015</h3>
   <img width="40%" src="group.png">
 </section>
@@ -148,7 +148,7 @@ __DATA__
     <h3>#1: Do not depend on any external running servers</h3>
     <ul>
       <li>Test::Mojo starts a in-process application server</li>
-      <li>Perl can't (natively) interpret Javascript</li>
+      <li>Perl can't (natively) interpret JavaScript</li>
       <li>Even if it could, it would need a DOM</li>
       <li>We could spin up a phantomjs process on demand?</li>
     <ul>
@@ -171,7 +171,7 @@ __DATA__
     <h3>#2: Emit TAP in the normal way Perl tests do</h3>
     <ul>
       <li>Important for integrating into existing architecture</li>
-      <li>Could use Tape.js from javascript side</li>
+      <li>Could use Tape.js from JavaScript side</li>
       <li>Could use existing Perl Test::More somehow</li>
     </ul>
   </section>

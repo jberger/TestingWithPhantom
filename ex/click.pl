@@ -5,10 +5,10 @@ __DATA__
 
 @@ click.html.ep
 <script>
-  var current = 0, states = ['Leela', 'Bender', 'Fry'];
+  var current = 0, targets = ['Leela', 'Bender', 'Fry'];
   function cycle() {
-    current = (current + 1) % states.length;
-    return states[current];
+    current = (current + 1) % targets.length;
+    return targets[current];
   }
 </script>
 Marked For Annihilation:
