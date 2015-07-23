@@ -75,7 +75,7 @@
 
   <ul>
     <li>I first gave this talk at YAPC::NA on June 8, 2015</li>
-    <!-- <li>I updated it on Feb 10, 2015 for MadMongers</li> -->
+    <li>I updated it on July 23, 2015 for Chicago.pm</li>
     <li>The talk is hosted at <a href="http://jberger.github.io/TestingWithPhantom" target="_blank">http://jberger.github.io/TestingWithPhantom</a></li>
     <li>The source is available at <a href="https://github.com/jberger/TestingWithPhantom" target="_blank">https://github.com/jberger/TestingWithPhantom</a></li>
     <li>All code samples and all tests:
@@ -171,8 +171,11 @@ done_testing;
 
 <section>
   <section>
-    <h2>How Do We Encourage People To Write JavaScript Tests?</h2>
     <img src="planet.png">
+  </section>
+
+  <section>
+    <h2>How Do We Encourage People To Write JavaScript Tests?</h2>
   </section>
 
   <section>
@@ -189,38 +192,42 @@ done_testing;
 <section>
   <h2>Design Goals</h2>
   <ul>
-    <li>#1: Do not depend on any external running servers</li>
-    <li>#2: Emit TAP in the normal way Perl tests do</li>
-    <li>#3: Not have to reimplement lots of Test::More functionality</li>
+    <li class="fragment">#1: Do not depend on any external running servers</li>
+    <li class="fragment">#2: Emit TAP in the normal way Perl tests do</li>
+    <li class="fragment">#3: Not have to reimplement lots of Test::More functionality</li>
   </ul>
 </section>
 
 <section>
   <section>
-    <h3>#1: Do not depend on any external running servers</h3>
-    <p>Selenium requires external running servers</p>
-    <ul>
-      <li>Application server</li>
-      <li>Selenium (remote control) server</li>
-      <li>Browser?</li>
-    </ul>
-  </section>
-  <section>
-    <h3>#1: Do not depend on any external running servers</h3>
+    <h4>#1: Do not depend on any external running servers</h4>
+    <h3>Native Perl</h3>
     <ul>
       <li>Test::Mojo starts a in-process application server</li>
       <li>Perl can't (natively) interpret JavaScript</li>
       <li>Even if it could, it would need a DOM</li>
-      <li>We could spin up a phantomjs process on demand?</li>
     <ul>
   </section>
   <section>
-    <h2>Phantom JS</h2>
+    <h4>#1: Do not depend on any external running servers</h4>
+    <h3>Selenium</h3>
+    <p>Selenium requires external running servers</p>
+    <ul style="float: left; margin: 15px;">
+      <li>Application server</li>
+      <li>Selenium (remote control) server</li>
+      <li>Browser?</li>
+    </ul>
+    <image style="width: 40%" src="selenium.png">
+  </section>
+  <section>
+    <h4>#1: Do not depend on any external running servers</h4>
+    <h3>Phantom JS</h3>
     <ul>
       <li>Headless WebKit browser</li>
       <li><a href="http://phantomjs.org">http://phantomjs.org</a></li>
       <li>Easy to install</li>
       <li>Free / Open source</li>
+      <li class="fragment">We could spin up a phantomjs process on demand?</li>
     </ul>
     <br>
     <img class="fragment" width="40%" src="money.jpg">
@@ -237,6 +244,7 @@ done_testing;
     </ul>
   </section>
   <section>
+    <h4>#2: Emit TAP in the normal way Perl tests do</h4>
     <h3>Practical Considerations</h3>
     <ul>
       <li>JavaScript-side solutions are hard to install</li>
@@ -246,7 +254,6 @@ done_testing;
 </section>
 
 <section>
-  <section>
     <h3>#3: Not have to reimplement lots of Test::More functionality</h3>
 
     <ul>
@@ -258,22 +265,31 @@ done_testing;
         </ul>
       </li>
     </ul>
-  </section>
+</section>
 
-  <section>
-    <h3>How Can This Be Done?</h3>
-    <ul>
-      <li>A function call to start phantomjs and set it up</li>
-      <li>Send JSON over pipe to invoke functions with arguments in the Perl process</li>
-      <li>All tests from JS are wrapped in a subtest</li>
-      <li>Future work: A side-channel websocket also be nice</li>
-    </ul>
-  </section>
+<section>
+  <h2 class="no-uc">Test::Mojo::Role::Phantom</h2>
+  <ul>
+    <li>A test method call
+      <ul>
+        <li>start a subtest in Perl</li>
+        <li>start phantomjs</li>
+        <li>set up the javascript environment</li>
+      </ul>
+    </li>
+    <li class="fragment">Send JSON over pipe to the Perl process
+      <ul>
+        <li>["Test::More::ok", 1, "basic check"]</li>
+        <li>Execute inside Perl/subtest</li>
+      </ul>
+    </li>
+    <li class="fragment">Future work: A side-channel websocket also be nice</li>
+  </ul>
 </section>
 
 <section>
   <section>
-    <h2>Dynamic Example</h2>
+    <h2>Testing Dynamics</h2>
     <img width="40%" src="dynamic.gif">
   </section>
   <section>
@@ -442,7 +458,7 @@ done_testing;
 			// Full list of configuration options available at:
 			// https://github.com/hakimel/reveal.js#configuration
       
-      var init = {"controls":true,"center":true,"progress":true,"transition":"slide","history":true};
+      var init = {"center":true,"transition":"slide","history":true,"progress":true,"controls":true};
 			// Optional reveal.js plugins
       init.dependencies = [
         { src: 'revealjs/lib/js/classList.js', condition: function() { return !document.body.classList; } },
